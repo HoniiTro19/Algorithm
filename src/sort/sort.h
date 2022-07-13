@@ -9,9 +9,25 @@ using namespace std;
 template<class T>
 class BubbleSort {
 public:
-    BubbleSort();
-    ~BubbleSort();
-    void solution(vector<T> &vec);
+    static void solution(vector<T> &vec);
+};
+
+template<class T>
+class InsertSort {
+public:
+    static void solution(vector<T> &vec);
+};
+
+template<class T>
+class MergeSort {
+public:
+    static void solution(vector<T> &vec);
+};
+
+template<class T>
+class QuickSort {
+public:
+    static void solution(vector<T> &vec, int start, int end);
 };
 
 #endif

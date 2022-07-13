@@ -25,6 +25,11 @@
         "xstring": "cpp",
         "string": "cpp",
         "vector": "cpp",
-        "algorithm": "cpp"
-    }
+        "algorithm": "cpp",
+        "chrono": "cpp"
+    },
+    "gtest-adapter.debugConfig": [
+        "(gdb) Launch"
+    ],
+    "gtest-adapter.supportLocation": true
 }
