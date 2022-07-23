@@ -39,7 +39,6 @@ private:
     int capacity;
     int count;
     int* tags;
-
 };
 
 #endif
