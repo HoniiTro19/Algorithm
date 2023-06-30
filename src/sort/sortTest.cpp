@@ -5,8 +5,8 @@
 #include "sort.h"
 #include "gtest/gtest.h"
 
-int testSize = 1000;
-int loopTimes = 1000;
+int testSize = 10000;
+int loopTimes = 10000;
 vector<int> orderly(testSize);
 vector<int> disorderly(testSize);
 

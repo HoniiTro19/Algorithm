@@ -1,4 +1,4 @@
-#include "sort.h"
+// #include "sort.h"
 
 template<class T>
 void BubbleSort<T>::solution(vector<T> &vec) {
@@ -81,7 +81,7 @@ void QuickSort<T>::solution(vector<T> &vec, int start, int end) {
     solution(vec, left + 1, end);
 }
 
-template class BubbleSort<int>;
-template class InsertSort<int>;
-template class MergeSort<int>;
-template class QuickSort<int>;
+// template class BubbleSort<int>;
+// template class InsertSort<int>;
+// template class MergeSort<int>;
+// template class QuickSort<int>;
