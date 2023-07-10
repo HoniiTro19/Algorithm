@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -7,14 +8,14 @@
 
 using namespace std;
 
-class OceanbaseIntern {
+class OceanBase {
 public:
   static int32_t solution1(string ip);
   static void solution2(vector<vector<int>> &res, vector<int> &numbers,
                         vector<int> &curNumber, int index, int remain);
 };
 
-int32_t OceanbaseIntern::solution1(string ip) {
+int32_t OceanBase::solution1(string ip) {
   int32_t decode = 0;
   int token = 0;
   for (char ch : ip) {
@@ -35,8 +36,8 @@ int32_t OceanbaseIntern::solution1(string ip) {
   return decode;
 }
 
-void OceanbaseIntern::solution2(vector<vector<int>> &res, vector<int> &numbers,
-                                vector<int> &curNumber, int index, int remain) {
+void OceanBase::solution2(vector<vector<int>> &res, vector<int> &numbers,
+                          vector<int> &curNumber, int index, int remain) {
   if (remain == 0) {
     res.push_back(curNumber);
     return;
