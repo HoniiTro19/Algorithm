@@ -1,3 +1,4 @@
+#include <climits>
 #include <iostream>
 
 #ifndef HASHTABLE_H_
