@@ -1,6 +1,33 @@
 #include "leetcode.h"
 #include "gtest/gtest.h"
 
+TEST(Leetcode, rearCreateList) {
+  vector<int> test_data = {1, 2, 3, 4, 5};
+  ListNode *head = new ListNode();
+  head = RearCreateList(test_data, head);
+  EXPECT_EQ(test_data, SerializeList(head));
+  DestroyList(head);
+}
+
+TEST(Leetcode, headCreateList) {
+  vector<int> test_data = {5, 4, 3, 2, 1};
+  vector<int> target_res = {1, 2, 3, 4, 5};
+  ListNode *head = new ListNode();
+  head = HeadCreateList(test_data, head);
+  EXPECT_EQ(target_res, SerializeList(head));
+  DestroyList(head);
+}
+
+TEST(Leetcode, createTree) {
+  vector<int> test_data = {1,  2, -1, 3,  4,  -1, -1, 5,
+                           -1, 6, -1, -1, -1, -1, -1};
+  vector<int> target_res = {1, 2, 3, 5, 4, 6};
+  TreeNode *root = new TreeNode();
+  root = CreateTreeFull(test_data, root);
+  EXPECT_EQ(target_res, PreorderSerializeTree(root));
+  DestroyTree(root);
+}
+
 TEST(Leetcode, solution1) {
   vector<int> test_data = {2, 7, 11, 15};
   vector<int> target_res = {0, 1};
@@ -55,4 +82,14 @@ TEST(Leetcode, solution25) {
   EXPECT_EQ(SerializeList(target_res_list), SerializeList(res_list));
   DestroyList(test_data_list);
   DestroyList(target_res_list);
+}
+
+TEST(Leetcode, solution102) {
+  vector<int> test_data_vec = {3, 9, 20, -1, -1, 15, 7};
+  vector<vector<int>> target_res_vec = {{3}, {9, 20}, {15, 7}};
+  TreeNode *root = new TreeNode();
+  root = CreateTreeFull(test_data_vec, root);
+  vector<vector<int>> res = Leetcode::Solution102(root);
+  EXPECT_EQ(target_res_vec, res);
+  DestroyTree(root);
 }

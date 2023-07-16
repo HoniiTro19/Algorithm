@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <numeric>
+#include <queue>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -39,6 +40,7 @@ ListNode *RearCreateList(const vector<int> &seq, ListNode *head) {
     pend->next = pnew;
     pend = pnew;
   }
+  return head;
 }
 
 void DestroyList(ListNode *head) {
@@ -61,17 +63,84 @@ vector<int> SerializeList(const ListNode *head) {
   return serialize;
 }
 
+struct TreeNode {
+  int val;
+  TreeNode *left;
+  TreeNode *right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {}
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+  TreeNode(int x, TreeNode *left, TreeNode *right)
+      : val(x), left(left), right(right) {}
+};
+
+TreeNode *CreateSubtree(const vector<int> &seq, int index) {
+  if (index >= seq.size() || -1 == seq[index])
+    return nullptr;
+  TreeNode *node = new TreeNode(seq[index]);
+  node->left = CreateSubtree(seq, index * 2 + 1);
+  node->right = CreateSubtree(seq, index * 2 + 2);
+  return node;
+}
+
+TreeNode *CreateTreeFull(const vector<int> &seq, TreeNode *root) {
+  int index = 0;
+  if (index >= seq.size() || -1 == seq[index])
+    return root;
+  root->val = seq[index];
+  root->left = CreateSubtree(seq, index * 2 + 1);
+  root->right = CreateSubtree(seq, index * 2 + 2);
+  return root;
+}
+
+void DestroyTree(TreeNode *root) {
+  if (nullptr == root)
+    return;
+  DestroyTree(root->left);
+  DestroyTree(root->right);
+  delete root;
+}
+
+void PreorderSerializeSubtree(vector<int> &serialize, TreeNode *root) {
+  if (nullptr == root) {
+    return;
+  }
+  serialize.push_back(root->val);
+  PreorderSerializeSubtree(serialize, root->left);
+  PreorderSerializeSubtree(serialize, root->right);
+}
+
+vector<int> PreorderSerializeTree(TreeNode *root) {
+  vector<int> serialize;
+  if (nullptr == root) {
+    serialize.push_back(-1);
+    return serialize;
+  }
+  serialize.push_back(root->val);
+  PreorderSerializeSubtree(serialize, root->left);
+  PreorderSerializeSubtree(serialize, root->right);
+  return serialize;
+}
+
 class Leetcode {
 public:
   Leetcode() {}
   ~Leetcode() {}
+  // 两数之和
   static vector<int> Solution1(const vector<int> &nums, int target);
+  // 字母异位词分组
   static vector<vector<string>> Solution49(const vector<string> &strs);
+  // 盛最多水的容器
   static int Solution11(const vector<int> &height);
+  // 无重复字符的最长子串
   static int Solution3(string s);
+  // 和为K的子数组
   static int Solution560(const vector<int> &nums, int k);
+  // 最大子数组和
   static int Solution53(const vector<int> &nums);
+  // K个一组翻转链表
   static ListNode *Solution25(ListNode *head, int k);
+  // 二叉树的层序遍历
+  static vector<vector<int>> Solution102(TreeNode *root);
 };
 
 vector<int> Leetcode::Solution1(const vector<int> &nums, int target) {
@@ -180,6 +249,55 @@ int Leetcode::Solution53(const vector<int> &nums) {
   return res == 0 ? maxmin : res;
 }
 
-ListNode *Leetcode::Solution25(ListNode *head, int k) {}
+ListNode *Leetcode::Solution25(ListNode *head, int k) {
+  int n = 0;
+  for (ListNode *cur = head->next; cur; cur = cur->next) {
+    ++n;
+  }
+  int cnt = 0;
+  ListNode *phead = head;
+  ListNode *pcur = head->next;
+  ListNode *ppre = nullptr;
+  ListNode *pnext = nullptr;
+  for (; n >= k; n -= k) {
+    for (int i = 0; i < k; ++i) {
+      pnext = pcur->next;
+      pcur->next = ppre;
+      ppre = pcur;
+      pcur = pnext;
+      ++cnt;
+    }
+    cnt = 0;
+    pnext = phead->next;
+    phead->next->next = pcur;
+    phead->next = ppre;
+    phead = pnext;
+  }
+  return head;
+}
+
+vector<vector<int>> Leetcode::Solution102(TreeNode *root) {
+  queue<TreeNode *> levelq;
+  vector<vector<int>> levels;
+  if (nullptr != root) {
+    levelq.push(root);
+    int idx = 0;
+    while (!levelq.empty()) {
+      int sz = levelq.size();
+      levels.push_back({});
+      for (int i = 0; i < sz; ++i) {
+        TreeNode *tmp = levelq.front();
+        levels[idx].push_back(tmp->val);
+        levelq.pop();
+        if (tmp->left)
+          levelq.push(tmp->left);
+        if (tmp->right)
+          levelq.push(tmp->right);
+      }
+      ++idx;
+    }
+  }
+  return levels;
+}
 
 #endif
