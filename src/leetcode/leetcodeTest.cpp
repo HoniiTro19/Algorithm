@@ -93,3 +93,13 @@ TEST(Leetcode, solution102) {
   EXPECT_EQ(target_res_vec, res);
   DestroyTree(root);
 }
+
+TEST(Leetcode, solution146) {
+  vector<string> ops = {"LRUCache", "put", "put", "get", "put",
+                        "get",      "put", "get", "get", "get"};
+  vector<vector<int>> params = {{2}, {1, 1}, {2, 2}, {1}, {3, 3},
+                                {2}, {4, 4}, {1},    {3}, {4}};
+  vector<int> target_res = {-2, -2, -2, 1, -2, -1, -2, -1, 3, 4};
+  vector<int> res = Leetcode::Solution146(ops, params);
+  ASSERT_EQ(target_res, res);
+}

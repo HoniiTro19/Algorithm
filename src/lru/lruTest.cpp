@@ -1,6 +1,5 @@
-#include "gtest/gtest.h"
 #include "lru.h"
+#include "gtest/gtest.h"
+#include <thread>
 
-TEST(LRU, solution) {
-
-}
+TEST(LRUCache, solution) {}

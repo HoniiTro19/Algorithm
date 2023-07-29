@@ -1,7 +1,9 @@
 #include <algorithm>
+#include <cassert>
 #include <climits>
 #include <cstring>
 #include <iostream>
+#include <mutex>
 #include <numeric>
 #include <queue>
 #include <string>
@@ -141,6 +143,9 @@ public:
   static ListNode *Solution25(ListNode *head, int k);
   // 二叉树的层序遍历
   static vector<vector<int>> Solution102(TreeNode *root);
+  // LRU缓存
+  static vector<int> Solution146(vector<string> &ops,
+                                 vector<vector<int>> &params);
 };
 
 vector<int> Leetcode::Solution1(const vector<int> &nums, int target) {
@@ -298,6 +303,106 @@ vector<vector<int>> Leetcode::Solution102(TreeNode *root) {
     }
   }
   return levels;
+}
+
+struct LRUHandle {
+  int key;
+  int value;
+  LRUHandle *prev;
+  LRUHandle *next;
+
+  LRUHandle() : key(0), value(0), prev(nullptr), next(nullptr) {}
+  LRUHandle(int key, int value)
+      : key(key), value(value), prev(nullptr), next(nullptr) {}
+  LRUHandle(int key, int value, LRUHandle *prev, LRUHandle *next)
+      : key(key), value(value), prev(prev), next(next) {}
+};
+
+class LRUCache {
+public:
+  LRUCache(size_t capacity);
+  int get(int key);
+  void put(int key, int value);
+
+private:
+  void lru_remove(LRUHandle *handle);
+  void lru_append(LRUHandle *list, LRUHandle *handle);
+
+private:
+  size_t capacity_;
+  size_t usage_;
+  LRUHandle lru_;
+  unordered_map<int, LRUHandle *> cache_;
+};
+
+LRUCache::LRUCache(size_t capacity) : capacity_(capacity), usage_(0) {
+  lru_.next = &lru_;
+  lru_.prev = &lru_;
+}
+
+void LRUCache::lru_remove(LRUHandle *handle) {
+  handle->prev->next = handle->next;
+  handle->next->prev = handle->prev;
+  --usage_;
+}
+
+void LRUCache::lru_append(LRUHandle *list, LRUHandle *handle) {
+  list->prev->next = handle;
+  handle->prev = list->prev;
+  handle->next = list;
+  list->prev = handle;
+  ++usage_;
+}
+
+int LRUCache::get(int key) {
+  auto gethandle = cache_.find(key);
+  if (cache_.end() != gethandle) {
+    LRUHandle *handle = gethandle->second;
+    lru_remove(handle);
+    lru_append(&lru_, handle);
+    return handle->value;
+  } else {
+    return -1;
+  }
+}
+
+void LRUCache::put(int key, int value) {
+  auto gethandle = cache_.find(key);
+  if (cache_.end() != gethandle) {
+    LRUHandle *oldhandle = gethandle->second;
+    lru_remove(oldhandle);
+  }
+  LRUHandle *newhandle = new LRUHandle(key, value);
+  cache_[key] = newhandle;
+  lru_append(&lru_, newhandle);
+  if (usage_ > capacity_) {
+    cache_.erase(lru_.next->key);
+    lru_remove(lru_.next);
+  }
+}
+
+vector<int> Leetcode::Solution146(vector<string> &ops,
+                                  vector<vector<int>> &params) {
+  LRUCache *lru = nullptr;
+  vector<int> res;
+  for (int i = 0; i < ops.size(); ++i) {
+    if ("LRUCache" == ops[i]) {
+      assert(1 == params[i].size());
+      lru = new LRUCache(params[i][0]);
+      res.push_back(-2);
+    } else if ("get" == ops[i]) {
+      assert(nullptr != lru);
+      assert(1 == params[i].size());
+      res.push_back(lru->get(params[i][0]));
+    } else if ("put" == ops[i]) {
+      assert(2 == params[i].size());
+      lru->put(params[i][0], params[i][1]);
+      res.push_back(-2);
+    } else {
+      assert(-1 == 0);
+    }
+  }
+  return res;
 }
 
 #endif
