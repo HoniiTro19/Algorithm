@@ -1,5 +1,3 @@
-// #include "sort.h"
-
 template <class T> void BubbleSort<T>::solution(vector<T> &vec) {
   int len = vec.size();
   bool orderly = false;
@@ -57,26 +55,97 @@ template <class T> void MergeSort<T>::solution(vector<T> &vec) {
 
 template <class T>
 void QuickSort<T>::solution(vector<T> &vec, int start, int end) {
-  if (start >= end) {
-    return;
-  }
-  T mid = vec[end];
-  int left = start;
-  int right = end - 1;
-  while (left < right) {
-    while (vec[left] < mid && left < right) {
-      ++left;
+  // 非递归版本
+  stack<int> stk;
+  stk.push(start);
+  stk.push(end);
+  T pivot;
+  while (!stk.empty()) {
+    int right = stk.top();
+    stk.pop();
+    int left = stk.top();
+    stk.pop();
+    pivot = vec[right];
+    int l = left;
+    int r = right - 1;
+    while (l < r) {
+      while (vec[l] < pivot && l < r) {
+        ++l;
+      }
+      while (vec[r] > pivot && l < r) {
+        --r;
+      }
+      swap(vec[l], vec[r]);
     }
-    while (vec[right] >= mid && left < right) {
-      --right;
+    if (vec[l] >= pivot) {
+      swap(vec[l], vec[right]);
     }
-    swap(vec[left], vec[right]);
+    if (left < l) {
+      stk.push(left);
+      stk.push(l);
+    }
+    if (right > l + 1) {
+      stk.push(l + 1);
+      stk.push(right);
+    }
   }
-  if (vec[left] >= vec[end]) {
-    swap(vec[left], vec[end]);
+  // 递归版本
+  // if (start >= end) {
+  //   return;
+  // }
+  // T pivot = vec[end];
+  // int left = start;
+  // int right = end - 1;
+  // while (left < right) {
+  //   while (vec[left] < pivot && left < right) {
+  //     ++left;
+  //   }
+  //   while (vec[right] > pivot && left < right) {
+  //     --right;
+  //   }
+  //   swap(vec[left], vec[right]);
+  // }
+  // if (vec[left] >= vec[end]) {
+  //   swap(vec[left], vec[end]);
+  // }
+  // solution(vec, start, left);
+  // solution(vec, left + 1, end);
+}
+
+template <class T> void HeapSort<T>::solution(vector<T> &vec) {
+  int n = vec.size();
+  auto swim = [=, &vec](int i) {
+    int parent = (i - 1) / 2;
+    while (i > 0 && vec[i] > vec[parent]) {
+      swap(vec[i], vec[parent]);
+      i = parent;
+      parent = (i - 1) / 2;
+    }
+  };
+
+  auto sink = [=, &vec](int i, int sz) {
+    int left = i * 2 + 1;
+    while (left < sz) {
+      if (left + 1 < sz && vec[left + 1] > vec[left]) {
+        ++left;
+      }
+      if (vec[left] > vec[i]) {
+        swap(vec[i], vec[left]);
+        i = left;
+        left = i * 2 + 1;
+      } else {
+        break;
+      }
+    }
+  };
+
+  for (int i = 0; i < n; ++i) {
+    swim(i);
   }
-  solution(vec, start, left);
-  solution(vec, left + 1, end);
+  for (int i = n - 1; i > 0; --i) {
+    swap(vec[i], vec[0]);
+    sink(0, i);
+  }
 }
 
 // template class BubbleSort<int>;

@@ -1,3 +1,5 @@
+#include <iostream>
+#include <stack>
 #include <vector>
 
 #ifndef SORT_H_
@@ -5,28 +7,29 @@
 
 using namespace std;
 
-template<class T>
-class BubbleSort {
+template <class T> class BubbleSort {
 public:
-    static void solution(vector<T> &vec);
+  static void solution(vector<T> &vec);
 };
 
-template<class T>
-class InsertSort {
+template <class T> class InsertSort {
 public:
-    static void solution(vector<T> &vec);
+  static void solution(vector<T> &vec);
 };
 
-template<class T>
-class MergeSort {
+template <class T> class MergeSort {
 public:
-    static void solution(vector<T> &vec);
+  static void solution(vector<T> &vec);
 };
 
-template<class T>
-class QuickSort {
+template <class T> class QuickSort {
 public:
-    static void solution(vector<T> &vec, int start, int end);
+  static void solution(vector<T> &vec, int start, int end);
+};
+
+template <class T> class HeapSort {
+public:
+  static void solution(vector<T> &vec);
 };
 
 #endif

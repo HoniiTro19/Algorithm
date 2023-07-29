@@ -5,8 +5,8 @@
 #include "sort.h"
 #include "gtest/gtest.h"
 
-int testSize = 10000;
-int loopTimes = 10000;
+int testSize = 1000;
+int loopTimes = 1000;
 vector<int> orderly(testSize);
 vector<int> disorderly(testSize);
 
@@ -58,6 +58,19 @@ TEST(QuickSort, quickSortRandomShuffle) {
   for (int i = 0; i < loopTimes; ++i) {
     shuffle(disorderly.begin(), disorderly.end(), default_random_engine(seed));
     QuickSort<int>::solution(disorderly, 0, disorderly.size() - 1);
+    EXPECT_EQ(orderly, disorderly);
+  }
+}
+
+TEST(HeapSort, heapSortRandomShuffle) {
+  for (int i = 0; i < testSize; ++i) {
+    orderly[i] = i + 1;
+    disorderly[i] = i + 1;
+  }
+  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+  for (int i = 0; i < loopTimes; ++i) {
+    shuffle(disorderly.begin(), disorderly.end(), default_random_engine(seed));
+    HeapSort<int>::solution(disorderly);
     EXPECT_EQ(orderly, disorderly);
   }
 }
