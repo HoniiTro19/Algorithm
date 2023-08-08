@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <iostream>
+#include <queue>
 #include <stack>
 #include <vector>
 
@@ -32,6 +34,18 @@ public:
   static void solution(vector<T> &vec);
 };
 
+class ExternalSort {
+public:
+  void mergeSort(const vector<pair<char *, size_t>> &blocks, FILE *output);
+
+private:
+  void sortBlock(char *buffer, size_t size);
+
+private:
+  const int BLOCK_SIZE = 1 << 28;
+  const int BUFFER_SIZE = 1 << 26;
+  const int MERGE_BUFFER_SIZE = 1 << 30;
+};
 #endif
 
 #include "sort.ipp"

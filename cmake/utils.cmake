@@ -1,0 +1,5 @@
+FUNCTION(add_executable_test testfile)
+  ADD_EXECUTABLE(${testfile} ${testfile}.cpp)
+  TARGET_LINK_LIBRARIES(${testfile} gtest gtest_main)
+  GTEST_DISCOVER_TESTS(${testfile})
+ENDFUNCTION()

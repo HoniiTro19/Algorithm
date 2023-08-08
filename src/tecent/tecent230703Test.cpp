@@ -1,3 +1,4 @@
+#include "gtest/gtest.h"
 #include <functional>
 #include <iostream>
 #include <vector>
@@ -49,4 +50,13 @@ Tecent::solution(const std::vector<std::vector<int>> &matrix, int target) {
   int res_y = lower_bound(0, matrix[0].size(), target,
                           std::bind(get_data, res_x, std::placeholders::_1));
   return {res_x, res_y};
+}
+
+TEST(Tecent, solution) {
+  Tecent tecent = Tecent();
+  std::vector<std::vector<int>> matrix = {
+      {0, 1, 2, 3, 4}, {5, 6, 7, 8, 9}, {10, 11, 12, 13, 14}};
+  std::pair<int, int> res = tecent.solution(matrix, 8);
+  std::pair<int, int> truth(1, 3);
+  ASSERT_EQ(res, truth);
 }
