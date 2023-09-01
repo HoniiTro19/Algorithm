@@ -3,3 +3,8 @@ FUNCTION(add_executable_test testfile)
   TARGET_LINK_LIBRARIES(${testfile} gtest gtest_main)
   GTEST_DISCOVER_TESTS(${testfile})
 ENDFUNCTION()
+
+FUNCTION(add_aco_executable testfile)
+  ADD_EXECUTABLE(${testfile} ${testfile}.cpp ../../deps/libaco/aco.c ../../deps/libaco/acosw.S)
+  TARGET_INCLUDE_DIRECTORIES(${testfile} PRIVATE ../../deps/libaco)
+ENDFUNCTION()
