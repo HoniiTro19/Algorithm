@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Any executable (gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "program": "${input:programPath}",
+      "args": ["${input:programArgs}"],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "logging": {
+        "engineLogging": false,
+        "trace": false,
+        "programOutput": true
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "programPath",
+      "type": "promptString",
+      "description": "可执行文件路径（例如：${workspaceFolder}/build/src/lru/lruTest）",
+      "default": "${workspaceFolder}/build/src/lru/lruTest"
+    },
+    {
+      "id": "programArgs",
+      "type": "promptString",
+      "description": "程序参数（例如：--gtest_filter=LRUCache.solution；不需要就留空）",
+      "default": ""
+    }
+  ]
+}
+
