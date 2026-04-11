@@ -1,0 +1,12 @@
+PROJECT(interview VERSION 0.1.0)
+MESSAGE("Begin to build " ${PROJECT_NAME})
+MESSAGE(STATUS "This is PROJECT_BINARY_DIR dir " ${PROJECT_BINARY_DIR})
+MESSAGE(STATUS "This is PROJECT_SOURCE_DIR dir " ${PROJECT_SOURCE_DIR})
+
+INCLUDE_DIRECTORIES(. ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/../../deps)
+ENABLE_TESTING()
+INCLUDE(GoogleTest)
+add_executable_test(test)
+add_executable_test(meituan)
+add_executable_test(tenxun)
+add_executable_test(didi)

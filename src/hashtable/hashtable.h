@@ -1,27 +1,21 @@
-#include <climits>
 #include <iostream>
+#include <vector>
+#include <limits>
 
 #ifndef HASHTABLE_H_
 #define HASHTABLE_H_
 
-using namespace std;
+using Status = int;
+using KeyType = int;
+using HashType = int;
 
-#define KEY_EXISTS 0
-#define KEY_NOT_EXISTS 1
-#define SUCCESS 2
-#define DUPLICATED_KEY 3
-#define OVERFLOW -1
-
-typedef int Status;
-typedef int KeyType;
-typedef int HashType;
-typedef struct {
-  KeyType key;
-} Record;
+static constexpr Status KEY_EXISTS = 0;
+static constexpr Status KEY_NOT_EXISTS = 1;
+static constexpr Status SUCCESS = 2;
+static constexpr Status OVERFLOW = -1;
 
 class HashTable {
 public:
-  ~HashTable();
   void initHashtable(int cap);
   Status insertHash(KeyType key);
   Status deleteHash(KeyType key);
@@ -30,52 +24,43 @@ public:
   int getTableCapacity();
 
 private:
-  int hashFunction(KeyType key);
-  void collisionKey(HashType &hash);
+  enum class SlotState { Empty = 0, Occupied = 1, Deleted = -1 };
+
+  struct Slot {
+    KeyType key{std::numeric_limits<KeyType>::max()};
+    SlotState state{SlotState::Empty};
+  };
+
+  int hashFunction(KeyType key) const { return (3 * key) % capacity; }
+  void collisionKey(HashType &hash) const { hash = (hash + 1) % capacity; }
   Status searchHash(KeyType key, HashType &hash, int &collision);
   void resizeHash();
 
 private:
-  Record **records;
-  int capacity;
-  int count;
-  int *tags;
+  std::vector<Slot> table;
+  int capacity{0};
+  int count{0};
 };
-
-HashTable::~HashTable() {
-  for (int i = 0; i < capacity; ++i) {
-    Record *record = records[i];
-    if (record != NULL) {
-      free(record);
-    }
-  }
-  free(records);
-  free(tags);
-}
 
 void HashTable::initHashtable(int cap) {
   count = 0;
   capacity = cap;
-  records = (Record **)calloc(capacity, sizeof(Record *));
-  tags = (int *)malloc(capacity * sizeof(int));
-  for (int i = 0; i < capacity; ++i) {
-    records[i] = (Record *)malloc(sizeof(Record));
-    records[i]->key = INT_MAX;
-    tags[i] = 0;
-  }
+  table.assign(capacity,
+               Slot{std::numeric_limits<KeyType>::max(), SlotState::Empty});
 }
-
-int HashTable::hashFunction(KeyType key) { return (3 * key) % capacity; }
-
-void HashTable::collisionKey(HashType &hash) { hash = (hash + 1) % capacity; }
 
 Status HashTable::searchHash(KeyType key, HashType &hash, int &collision) {
   hash = hashFunction(key);
-  while ((tags[hash] == 1 && records[hash]->key != key) || tags[hash] == -1) {
+  collision = 0;
+  // Keep probing while:
+  // - slot is occupied but key differs
+  // - slot is marked as deleted (to match your original behavior)
+  while ((table[hash].state == SlotState::Occupied && table[hash].key != key) ||
+         table[hash].state == SlotState::Deleted) {
     collisionKey(hash);
     collision++;
   }
-  if (tags[hash] == 1 && records[hash]->key == key) {
+  if (table[hash].state == SlotState::Occupied && table[hash].key == key) {
     return KEY_EXISTS;
   } else {
     return KEY_NOT_EXISTS;
@@ -86,8 +71,8 @@ Status HashTable::insertHash(KeyType key) {
   HashType hash;
   int collision = 0;
   if (searchHash(key, hash, collision) == KEY_NOT_EXISTS) {
-    records[hash]->key = key;
-    tags[hash] = 1;
+    table[hash].key = key;
+    table[hash].state = SlotState::Occupied;
     count++;
     if (collision * 1.0 / capacity > 0.2 || count * 1.0 / capacity > 0.8) {
       resizeHash();
@@ -101,7 +86,7 @@ Status HashTable::deleteHash(KeyType key) {
   HashType hash;
   int collision = 0;
   if (searchHash(key, hash, collision) == KEY_EXISTS) {
-    tags[hash] = -1;
+    table[hash].state = SlotState::Deleted;
     count--;
     return SUCCESS;
   }
@@ -115,29 +100,26 @@ Status HashTable::findHash(KeyType key) {
 }
 
 void HashTable::resizeHash() {
-  Record **oldRecords = records;
-  int *oldTags = tags;
-  int oldCapacity = capacity;
   int newCapacity = 2 * capacity - 1;
+  std::vector<Slot> oldTable = std::move(table);
+  int oldCapacity = capacity;
+
   initHashtable(newCapacity);
   for (int i = 0; i < oldCapacity; ++i) {
-    if (oldTags[i] == 1) {
-      insertHash(oldRecords[i]->key);
-      free(oldRecords[i]);
+    if (oldTable[i].state == SlotState::Occupied) {
+      insertHash(oldTable[i].key);
     }
   }
-  free(oldRecords);
-  free(oldTags);
 }
 
 void HashTable::printHash() {
-  cout << "Current Hash Table: ";
+  std::cout << "Current Hash Table: ";
   for (int i = 0; i < capacity; ++i) {
-    if (tags[i] == 1) {
-      cout << records[i] << " ";
+    if (table[i].state == SlotState::Occupied) {
+      std::cout << table[i].key << " ";
     }
   }
-  cout << endl;
+  std::cout << std::endl;
 }
 
 int HashTable::getTableCapacity() { return capacity; }

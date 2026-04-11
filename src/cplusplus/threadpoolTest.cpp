@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <memory>
+#include <cstdlib> // malloc/free
 #include <pthread.h>
 #include <unistd.h>
 
