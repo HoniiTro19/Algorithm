@@ -1,0 +1,55 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "编译当前 C++ 文件",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                "FILE=\"${file}\"; WS=\"${workspaceFolder}\"; if grep -q 'gtest/gtest.h' \"$FILE\" 2>/dev/null; then g++ -std=c++20 -Wall -Wextra -g -I\"$WS/src\" -I\"$WS/deps\" -I\"$WS/deps/googletest/googletest/include\" -I\"$WS/deps/googletest/googletest\" -I\"${fileDirname}\" \"$FILE\" \"$WS/deps/googletest/googletest/src/gtest-all.cc\" \"$WS/deps/googletest/googletest/src/gtest_main.cc\" -o \"${fileDirname}/${fileBasenameNoExtension}\" -pthread; else g++ -std=c++20 -Wall -Wextra -g -I\"$WS/src\" -I\"$WS/deps\" -I\"${fileDirname}\" \"$FILE\" -o \"${fileDirname}/${fileBasenameNoExtension}\"; fi"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "focus": false,
+                "clear": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "编译并运行当前 C++ 文件",
+            "dependsOn": "编译当前 C++ 文件",
+            "type": "shell",
+            "command": "${fileDirname}/${fileBasenameNoExtension}",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "focus": false,
+                "clear": true
+            }
+        },
+        {
+            "label": "清理编译产物",
+            "type": "shell",
+            "command": "rm",
+            "args": [
+                "-f",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}
+

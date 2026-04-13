@@ -1,4 +1,5 @@
 #include <climits>
+#include <cstddef>
 #include <cstdio>
 #include <cstring>
 #include <memory>
@@ -10,11 +11,10 @@ using namespace std;
 
 typedef void (*task_func_t)(void *args);
 
+// ISO C++ 版本（原 Linux 内核宏依赖 typeof 与 GNU 语句表达式，标准 C++ 下无法编译）
 #define container_of(ptr, type, member)                                        \
-  ({                                                                           \
-    const typeof(((type *)0)->member) *__mptr = (ptr);                         \
-    (type *)((char *)__mptr - offsetof(type, member));                         \
-  })
+  (reinterpret_cast<type *>(reinterpret_cast<char *>(ptr) -                    \
+                            offsetof(type, member)))
 #define list_entry(ptr, type, member) container_of(ptr, type, member)
 
 struct list_head {
@@ -88,7 +88,7 @@ static void *_process_task_thread(void *args) {
     }
     pos = tp->hlist.next;
     list_del(pos);
-    --tp->curr_ts_num;
+    tp->curr_ts_num = tp->curr_ts_num - 1;
     pthread_mutex_unlock(&tp->mutex);
 
     task = list_entry(pos, task_t, node);
@@ -136,7 +136,7 @@ int add_task_threadpool(threadpool_t *tp, task_func_t func, void *args,
   } else {
     list_add_tail(&task->node, &tp->hlist);
   }
-  ++tp->curr_ts_num;
+  tp->curr_ts_num = tp->curr_ts_num + 1;
   pthread_mutex_unlock(&tp->mutex);
   pthread_cond_signal(&tp->cond);
   return 0;
@@ -189,7 +189,7 @@ int add_task_group_threadpool(manage_thpool_t *mtp, task_func_t func,
                               void *args, int priority) {
   int ts_num = INT_MAX;
   threadpool_t *tp = NULL;
-  for (register int i = 0; i < mtp->thpool_nums; ++i) {
+  for (int i = 0; i < mtp->thpool_nums; ++i) {
     if (mtp->thpools[i]->curr_ts_num < ts_num) {
       ts_num = mtp->thpools[i]->curr_ts_num;
       tp = mtp->thpools[i];

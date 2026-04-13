@@ -24,7 +24,7 @@ class LRUCache {
 private:
     int count_;
     int capacity_;
-    std::unordered_map<int, LRUCache*> map_;
+    std::unordered_map<int, CacheHandle*> map_;
     CacheHandle head_;
     CacheHandle tail_;
 private:
@@ -44,7 +44,7 @@ private:
         head_.next = handle;
         handle->prev = &head_;
         handle->next = next;
-        next->prev = handle_;
+        next->prev = handle;
         map_[key] = handle;
         count_ += 1;
     }
@@ -53,12 +53,12 @@ public:
     LRUCache(int capacity) {
         count_ = 0;
         capacity_ = capacity;
-        head_.next = tail_;
-        tail_.prev = head;
+        head_.next = &tail_;
+        tail_.prev = &head_;
     }
 
     ~LRUCache() {
-        CacheHandle *handle = head_->next;
+        CacheHandle *handle = head_.next;
         while (handle != &tail_) {
             CacheHandle *next = handle->next;
             delete handle;
@@ -95,7 +95,3 @@ public:
         return -1;
     }
 };
-
-TEST(didi, solution) {
-    LRUCache lru_cache()
-}
