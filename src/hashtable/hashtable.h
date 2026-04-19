@@ -12,7 +12,8 @@ using HashType = int;
 static constexpr Status KEY_EXISTS = 0;
 static constexpr Status KEY_NOT_EXISTS = 1;
 static constexpr Status SUCCESS = 2;
-static constexpr Status OVERFLOW = -1;
+// Avoid name OVERFLOW: macOS <math.h> defines OVERFLOW as a macro.
+static constexpr Status KEY_DUPLICATE = -1;
 
 class HashTable {
 public:
@@ -79,7 +80,7 @@ Status HashTable::insertHash(KeyType key) {
     }
     return SUCCESS;
   }
-  return OVERFLOW;
+  return KEY_DUPLICATE;
 }
 
 Status HashTable::deleteHash(KeyType key) {

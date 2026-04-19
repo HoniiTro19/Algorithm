@@ -2,16 +2,39 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Any executable (gdb)",
+      "name": "LLDB · 任意可执行",
       "type": "cppdbg",
       "request": "launch",
-      "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
+      "MIMode": "lldb",
       "program": "${input:programPath}",
       "args": ["${input:programArgs}"],
       "cwd": "${workspaceFolder}",
-      "stopAtEntry": false,
-      "externalConsole": false,
+      "stopAtEntry": true,
+      "console": "${input:debugConsole}",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for lldb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "logging": {
+        "engineLogging": false,
+        "trace": false,
+        "programOutput": true
+      }
+    },
+    {
+      "name": "GDB · 任意可执行",
+      "type": "cppdbg",
+      "request": "launch",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "program": "${input:programPath}",
+      "args": ["${input:programArgs}"],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": true,
+      "console": "${input:debugConsole}",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
@@ -38,7 +61,22 @@
       "type": "promptString",
       "description": "程序参数（例如：--gtest_filter=LRUCache.solution；不需要就留空）",
       "default": ""
+    },
+    {
+      "id": "debugConsole",
+      "type": "pickString",
+      "description": "程序 stdin/stdout 使用的终端（仅此一项与「集成 / 外部」有关）",
+      "options": [
+        {
+          "label": "集成终端（输出在 VS Code）",
+          "value": "integratedTerminal"
+        },
+        {
+          "label": "外部系统终端（适合 cin、getline 等交互）",
+          "value": "externalTerminal"
+        }
+      ],
+      "default": "integratedTerminal"
     }
   ]
 }
-

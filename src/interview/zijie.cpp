@@ -1,3 +1,4 @@
+#include "gtest/gtest.h"
 #include <algorithm>
 #include <cassert>
 #include <climits>
@@ -10,22 +11,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <stack>
 
-struct A {
-    char a;
-    int b;
-    char c;
-    double d;
-};
-
-struct alignas(16) B : A {
-    uint16_t e;
-    virtual ~B() {};
-};
-
-TEST(meituan, solution) {
-    A a;
-    ASSERT_EQ(24, sizeof(A));
-    B b;
-    ASSERT_EQ(48, sizeof(B));
+TEST(zijie, solution) {
 }

@@ -1,8 +1,6 @@
-#include "gtest/gtest.h"
 #include <algorithm>
 #include <cassert>
 #include <climits>
-#include <gtest/gtest.h>
 #include <iostream>
 #include <mutex>
 #include <numeric>
@@ -55,15 +53,3 @@ int main() {
         std::cout << ans << std::endl;
     }
 }
-
-// TEST(tengxun, solution) {
-//     // 5 3
-//     // 3
-//     // 1
-//     // 5
-//  1 3 2 1 4
-//  4 3 
-//     std::vector<int> test_data = {1, 3, 2, 1, 4};
-//     std::vector<int> results = {3, 4, }
-
-// }

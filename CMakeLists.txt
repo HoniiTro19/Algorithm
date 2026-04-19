@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.16)
 PROJECT(algorithm VERSION 0.1.0)
 
 # Export compile_commands.json for editor IntelliSense / diagnostics (VS Code C/C++, clangd, etc.)
