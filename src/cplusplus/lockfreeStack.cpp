@@ -67,15 +67,3 @@ TEST(LockFreeStack, Pop) {
   sort(res.begin(), res.end());
   ASSERT_EQ(target_res, res);
 }
-
-// template <class Obj> class LockFreeList {
-// public:
-//   void pushFront(Obj *value) {
-//     while (true) {
-//     }
-//   }
-
-// private:
-//   atomic<Obj *> head;
-//   atomic<Obj *> tail;
-// };
